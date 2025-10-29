@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState('projects');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const projects = [
     {
@@ -29,9 +29,9 @@ const Index = () => {
   ];
 
   const scrollToSection = (sectionId: string) => {
-    setActiveSection(sectionId);
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
+    setIsMenuOpen(false);
   };
 
   return (
@@ -40,31 +40,37 @@ const Index = () => {
         <div className="container mx-auto px-6 py-6 flex items-center justify-between">
           <h1 className="text-2xl font-light tracking-wider">АРХИТЕКТУРНОЕ БЮРО</h1>
           
-          <nav className="hidden md:flex gap-12">
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="text-sm tracking-wide transition-colors hover:text-primary"
+          >
+            <Icon name={isMenuOpen ? "X" : "Menu"} size={24} />
+          </button>
+        </div>
+      </header>
+
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-white/98 backdrop-blur-sm flex items-center justify-center">
+          <nav className="flex flex-col gap-8 text-center">
             {[
               { id: 'projects', label: 'Проекты' },
               { id: 'philosophy', label: 'Философия' },
               { id: 'method', label: 'Метод' },
               { id: 'about', label: 'О бюро' },
               { id: 'contacts', label: 'Контакты' }
-            ].map(item => (
+            ].map((item, index) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`text-sm tracking-wide transition-colors hover:text-primary ${
-                  activeSection === item.id ? 'text-primary' : 'text-muted-foreground'
-                }`}
+                className="text-4xl md:text-5xl font-light tracking-wide transition-colors hover:text-primary animate-fade-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 {item.label}
               </button>
             ))}
           </nav>
-
-          <button className="md:hidden">
-            <Icon name="Menu" size={24} />
-          </button>
         </div>
-      </header>
+      )}
 
       <section id="projects" className="pt-32 pb-20 min-h-screen">
         <div className="container mx-auto px-6">
